@@ -1,0 +1,30 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+
+contract BankAccount {
+
+    uint public balance;
+
+    // Deposit money
+    function deposit() public payable {
+        require(msg.value > 0, "Enter valid amount");
+
+        balance += msg.value;
+    }
+
+    // Withdraw money
+    function withdraw(uint amount) public {
+        require(amount > 0, "Invalid amount");
+        require(amount <= balance, "Insufficient balance");
+
+        balance -= amount;
+
+        (bool success, ) = payable(msg.sender).call{value: amount}("");
+        require(success, "Transfer failed");
+    }
+
+    // Display balance
+    function getBalance() public view returns (uint) {
+        return balance;
+    }
+}
